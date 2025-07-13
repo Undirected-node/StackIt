@@ -24,11 +24,14 @@ export const upvoteAnswer = async (req, res) => {
     const answer = await Answer.findById(id);
     if (!answer) return res.status(404).json({ message: "Answer not found" });
     if (answer.upvotes.includes(userId)) {
-      return res.status(400).json({ message: "You have already upvoted this answer" });
+      // Remove upvote (toggle off)
+      answer.upvotes = answer.upvotes.filter(uid => uid.toString() !== userId.toString());
+    } else {
+      // Add upvote
+      answer.upvotes.push(userId);
     }
-    answer.upvotes.push(userId);
     await answer.save();
-    res.status(200).json({ upvotes: answer.upvotes.length });
+    res.status(200).json({ upvotes: answer.upvotes.length, upvotesArray: answer.upvotes });
   } catch (error) {
     res.status(500).json({ message: "Failed to upvote answer", error: error.message });
   }

@@ -45,6 +45,7 @@ const AnswerQuestionPage = () => {
       });
       setAnswer("");
       setSuccess(true);
+      navigate("/");
     } catch (err) {
       setError(err.response?.data?.message || "Failed to submit answer");
     } finally {
@@ -140,20 +141,31 @@ const AnswerQuestionPage = () => {
           )}
         </div>
         {/* Submit Answer */}
-        <form onSubmit={handleSubmit}>
-          <label className="block mb-2 font-medium">Submit Your Answer</label>
-          <textarea
-            className="textarea textarea-bordered w-full min-h-[120px] mb-4"
-            value={answer}
-            onChange={e => setAnswer(e.target.value)}
-            placeholder="Write your answer here..."
-            disabled={submitting}
-          />
-          {error && <div className="text-red-500 mb-4">{error}</div>}
-          {success && <div className="text-green-600 mb-4">Answer submitted!</div>}
-          <button type="submit" className="btn btn-primary" disabled={submitting || !answer.trim()}>
-            {submitting ? "Submitting..." : "Submit Answer"}
-          </button>
+        <form onSubmit={handleSubmit} className="flex flex-col md:flex-row md:items-center gap-4 mt-2">
+          <div className="flex-1">
+            <label className="block mb-2 font-medium">Submit Your Answer</label>
+            <textarea
+              className="textarea textarea-bordered w-full min-h-[120px] mb-4"
+              value={answer}
+              onChange={e => setAnswer(e.target.value)}
+              placeholder="Write your answer here..."
+              disabled={submitting}
+            />
+            {error && <div className="text-red-500 mb-4">{error}</div>}
+            {success && <div className="text-green-600 mb-4">Answer submitted!</div>}
+          </div>
+          <div className="flex flex-col gap-2 md:gap-0 md:flex-row md:items-center">
+            <button type="submit" className="btn btn-primary md:mr-2" disabled={submitting || !answer.trim()}>
+              {submitting ? "Submitting..." : "Submit Answer"}
+            </button>
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={() => navigate("/")}
+            >
+              Go back to Home
+            </button>
+          </div>
         </form>
       </div>
     </div>

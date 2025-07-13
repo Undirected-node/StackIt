@@ -1,6 +1,7 @@
 import { THEMES } from "../constants";
 import { useThemeStore } from "../store/useThemeStore";
 import { Send, Palette, Eye, Sparkles } from "lucide-react";
+import { useState } from "react";
 
 const PREVIEW_MESSAGES = [
   { id: 1, content: "Hey! How's it going?", isSent: false },
@@ -11,6 +12,14 @@ const PREVIEW_MESSAGES = [
 
 const SettingsPage = () => {
   const { theme, setTheme } = useThemeStore();
+
+  // State for live preview
+  const [previewTitle, setPreviewTitle] = useState("How do I implement a live preview in React?");
+  const [previewDescription, setPreviewDescription] = useState("I'm trying to create a live preview feature for my form, but I'm not sure how to keep the preview in sync with the input fields. Any tips or best practices?");
+  const [previewTags, setPreviewTags] = useState(["react", "preview", "state"]);
+
+  // Tag input for demo (comma separated)
+  const [tagInput, setTagInput] = useState(previewTags.join(", "));
 
   return (
     <div className="min-h-screen bg-base-100 transition-colors duration-300">
@@ -111,82 +120,61 @@ const SettingsPage = () => {
               </div>
               <div>
                 <h2 className="text-xl font-semibold">Live Preview</h2>
-                <p className="text-base-content/70">See how your theme looks in action</p>
+                <p className="text-base-content/70">See how your question will look</p>
               </div>
             </div>
 
-            {/* Enhanced Preview */}
+            {/* Question Card Preview */}
             <div className="bg-base-200 rounded-2xl p-6 border border-base-300 shadow-xl">
-              <div className="bg-base-100 rounded-xl shadow-lg overflow-hidden border border-base-300">
-                {/* Chat Header */}
-                <div className="px-4 py-4 bg-gradient-to-r from-primary/5 to-secondary/5 border-b border-base-300">
-                  <div className="flex items-center gap-3">
-                    <div className="relative">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-primary-content font-semibold text-sm shadow-lg">
-                        JD
-                      </div>
-                      <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-success rounded-full border-2 border-base-100"></div>
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-base">John Doe</h3>
-                      <p className="text-xs text-success flex items-center gap-1">
-                        <div className="w-2 h-2 bg-success rounded-full animate-pulse"></div>
-                        Online
-                      </p>
-                    </div>
+              <div className="border rounded-lg p-5 bg-base-100 flex flex-col md:flex-row md:items-center justify-between">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-lg font-semibold text-primary-content truncate">{previewTitle || "Your question title..."}</span>
+                    {previewTags && previewTags.filter(Boolean).map(tag => (
+                      <span key={tag} className="badge badge-outline badge-sm ml-1">{tag}</span>
+                    ))}
                   </div>
+                  <div className="text-base-content/80 mb-1 line-clamp-2">{previewDescription || "Your question description..."}</div>
+                  <div className="text-xs text-base-content/60">Asked by You</div>
+                </div>
+                <div className="flex flex-col items-end gap-2 mt-4 md:mt-0 md:ml-6">
+                  <span className="badge badge-lg bg-primary text-primary-content">0 Answers</span>
+                  <button className="btn btn-sm btn-secondary" disabled>Reply</button>
+                </div>
+              </div>
                 </div>
 
-                {/* Chat Messages */}
-                <div className="p-4 space-y-3 h-64 overflow-y-auto bg-gradient-to-b from-base-100 to-base-50">
-                  {PREVIEW_MESSAGES.map((message) => (
-                    <div
-                      key={message.id}
-                      className={`flex ${message.isSent ? "justify-end" : "justify-start"} animate-fade-in`}
-                    >
-                      <div
-                        className={`
-                          max-w-[80%] rounded-2xl p-3 shadow-sm border transition-all duration-200 hover:shadow-md
-                          ${message.isSent 
-                            ? "bg-gradient-to-br from-primary to-primary/90 text-primary-content border-primary/20" 
-                            : "bg-base-200 border-base-300 hover:bg-base-300"
-                          }
-                        `}
-                      >
-                        <p className="text-sm leading-relaxed">{message.content}</p>
-                        <p
-                          className={`
-                            text-[10px] mt-2 flex justify-end
-                            ${message.isSent ? "text-primary-content/70" : "text-base-content/50"}
-                          `}
-                        >
-                          {message.id === 1 && "12:00 PM"}
-                          {message.id === 2 && "12:01 PM"}
-                          {message.id === 3 && "12:02 PM"}
-                          {message.id === 4 && "12:03 PM"}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Chat Input */}
-                <div className="p-4 bg-base-100 border-t border-base-300">
-                  <div className="flex gap-3">
-                    <div className="flex-1 relative">
+            {/* Live input controls for preview */}
+            <div className="bg-base-200 rounded-xl p-4 border border-base-300 space-y-4">
+              <div>
+                <label className="block mb-1 font-medium">Title</label>
                       <input
-                        type="text"
-                        className="input input-bordered w-full text-sm bg-base-200 border-base-300 focus:border-primary focus:outline-none pr-12"
-                        placeholder="Type your message..."
-                        value="This is a live preview! ✨"
-                        readOnly
+                  className="input input-bordered w-full"
+                  value={previewTitle}
+                  onChange={e => setPreviewTitle(e.target.value)}
+                  placeholder="Enter your question title"
                       />
                     </div>
-                    <button className="btn btn-primary btn-circle shadow-lg hover:shadow-xl transition-shadow">
-                      <Send size={18} />
-                    </button>
+              <div>
+                <label className="block mb-1 font-medium">Description</label>
+                <textarea
+                  className="textarea textarea-bordered w-full min-h-[80px]"
+                  value={previewDescription}
+                  onChange={e => setPreviewDescription(e.target.value)}
+                  placeholder="Describe your question..."
+                />
                   </div>
-                </div>
+              <div>
+                <label className="block mb-1 font-medium">Tags (comma separated)</label>
+                <input
+                  className="input input-bordered w-full"
+                  value={tagInput}
+                  onChange={e => {
+                    setTagInput(e.target.value);
+                    setPreviewTags(e.target.value.split(",").map(t => t.trim()).filter(Boolean));
+                  }}
+                  placeholder="e.g. react, preview, state"
+                />
               </div>
             </div>
 

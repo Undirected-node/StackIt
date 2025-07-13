@@ -2,6 +2,7 @@ import { generateToken } from "../lib/utils.js";
 import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 import cloudinary from "../lib/cloudinary.js";
+import { io } from "../lib/socket.js";
 
 export const signup = async (req, res) => {
   const { fullName, email, password } = req.body;
@@ -100,6 +101,9 @@ export const updateProfile = async (req, res) => {
       { profilePic: uploadResponse.secure_url },
       { new: true }
     );
+
+    // Emit event to all clients
+    io.emit("profilePicUpdated", { userId, profilePic: updatedUser.profilePic });
 
     res.status(200).json(updatedUser);
   } catch (error) {

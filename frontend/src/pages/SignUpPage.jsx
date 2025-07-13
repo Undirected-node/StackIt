@@ -256,7 +256,7 @@ const SignUpPage = () => {
                 <span className="text-red-500 animate-pulse">❤️</span> 
                 by 
                 <span className="font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-                  Mani
+                  team 4230
                 </span>
                 <span className="animate-bounce">✨</span>
               </p>

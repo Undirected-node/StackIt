@@ -25,6 +25,7 @@ export const getTopUsers = async (req, res) => {
     if (users.length > 0) users[0].badge = "Top Answerer";
     res.status(200).json(users.map(u => ({
       fullName: u.user.fullName,
+      profilePic: u.user.profilePic || "",
       totalUpvotes: u.totalUpvotes,
       badge: u.badge || null,
     })));
